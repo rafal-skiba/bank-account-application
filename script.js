@@ -88,6 +88,24 @@ containerMovements.insertAdjacentHTML('afterbegin', html);
 
 displayMovements(account1.movements);
 
+const createUsernames = function (accs) {
+accs.forEach(function (acc) {
+  acc.username= acc.owner 
+  .toLowerCase()
+  .split(' ')
+  .map((name) => name[0])
+  .join('');
+
+ 
+})
+}
+
+createUsernames(accounts);
+console.log(accounts)
+
+
+
+
 /////////////////////////////////////////////////
 /////////////////////////////////////////////////
 // LECTURES
@@ -103,10 +121,10 @@ const movements = [200, 450, -400, 3000, -650, -130, 70, 1300];
 /////////////////////////////////////////////////
 
 
-movements.forEach((value, index, arr) => {
-if (value > 0 ) {
-  console.log(`number ${index} deposited ${value}`)
-} else {
-  console.log(`to jest arr ${arr}`)
-}
-})
+// movements.forEach((value, index, arr) => {
+// if (value > 0 ) {
+//   console.log(`number ${index} deposited ${value}`)
+// } else {
+//   console.log(`to jest arr ${arr}`)
+// }
+// })
