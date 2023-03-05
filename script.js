@@ -35,6 +35,8 @@ const account4 = {
 
 const accounts = [account1, account2, account3, account4];
 
+const movements = [200, 450, -400, 3000, -650, -130, 70, 1300];
+
 // Elements
 const labelWelcome = document.querySelector('.welcome');
 const labelDate = document.querySelector('.date');
@@ -104,6 +106,19 @@ createUsernames(accounts);
 console.log(accounts)
 
 
+const deposits = movements.filter((depo) => depo > 0)
+const withdrawals = movements.filter((withdrawal) => withdrawal < 0)
+
+
+const calcPrintBalance = function (movements) {
+const balance = movements.reduce((acc, curr) => acc + curr, 0 )
+
+labelBalance.textContent = `${balance}€`;
+
+}
+
+calcPrintBalance(account2.movements);
+
 
 
 /////////////////////////////////////////////////
@@ -116,7 +131,7 @@ const currencies = new Map([
   ['GBP', 'Pound sterling'],
 ]);
 
-const movements = [200, 450, -400, 3000, -650, -130, 70, 1300];
+
 
 /////////////////////////////////////////////////
 
@@ -128,3 +143,12 @@ const movements = [200, 450, -400, 3000, -650, -130, 70, 1300];
 //   console.log(`to jest arr ${arr}`)
 // }
 // })
+
+const maximum = movements.reduce((acc, curr) => {
+ const max = acc > curr ? acc : curr;
+ return max;
+
+}, movements[0])
+
+console.log(maximum)
+
