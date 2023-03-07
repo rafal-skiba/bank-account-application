@@ -103,7 +103,6 @@ accs.forEach(function (acc) {
 }
 
 createUsernames(accounts);
-console.log(accounts)
 
 
 const deposits = movements.filter((depo) => depo > 0)
@@ -117,7 +116,43 @@ labelBalance.textContent = `${balance}€`;
 
 }
 
-calcPrintBalance(account2.movements);
+calcPrintBalance(account1.movements);
+
+const calcDisplaySummary = function (movements) {
+
+  const incomes = movements
+  .filter(depo => depo > 0)
+  .reduce((acc, mov) => acc + mov, 0)
+
+  labelSumIn.textContent = incomes + '€';
+
+  const outcomes = movements
+  .filter(depo => depo < 0)
+  .reduce((acc, mov) => acc + mov, 0)
+
+ labelSumOut.textContent = Math.abs(outcomes) + '€';
+
+
+const interest = movements
+.filter(mov => mov > 0)
+.map(deposit => (deposit * 1.2)/100)
+.filter((int, i, arr) => int >= 1)
+.reduce((acc, int) => acc + int, 0)
+
+labelSumInterest.textContent = interest + '€';
+
+}
+
+
+calcDisplaySummary(account1.movements)
+
+const eurotoUsd = 1.1;
+
+const totalDepo = movements.filter(depo => depo > 0).map(depo => depo * eurotoUsd).reduce((acc, depo) => acc + depo, 0);
+
+
+
+
 
 
 
@@ -144,11 +179,5 @@ const currencies = new Map([
 // }
 // })
 
-const maximum = movements.reduce((acc, curr) => {
- const max = acc > curr ? acc : curr;
- return max;
 
-}, movements[0])
-
-console.log(maximum)
 
