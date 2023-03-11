@@ -88,7 +88,6 @@ containerMovements.insertAdjacentHTML('afterbegin', html);
 })
 }
 
-displayMovements(account1.movements);
 
 const createUsernames = function (accs) {
 accs.forEach(function (acc) {
@@ -116,26 +115,25 @@ labelBalance.textContent = `${balance}€`;
 
 }
 
-calcPrintBalance(account1.movements);
 
-const calcDisplaySummary = function (movements) {
+const calcDisplaySummary = function (acc) {
 
-  const incomes = movements
+  const incomes = acc.movements
   .filter(depo => depo > 0)
   .reduce((acc, mov) => acc + mov, 0)
 
   labelSumIn.textContent = incomes + '€';
 
-  const outcomes = movements
+  const outcomes = acc.movements
   .filter(depo => depo < 0)
   .reduce((acc, mov) => acc + mov, 0)
 
  labelSumOut.textContent = Math.abs(outcomes) + '€';
 
 
-const interest = movements
+const interest = acc.movements
 .filter(mov => mov > 0)
-.map(deposit => (deposit * 1.2)/100)
+.map(deposit => (deposit * acc.interestRate)/100)
 .filter((int, i, arr) => int >= 1)
 .reduce((acc, int) => acc + int, 0)
 
@@ -144,13 +142,43 @@ labelSumInterest.textContent = interest + '€';
 }
 
 
-calcDisplaySummary(account1.movements)
+
 
 const eurotoUsd = 1.1;
 
 const totalDepo = movements.filter(depo => depo > 0).map(depo => depo * eurotoUsd).reduce((acc, depo) => acc + depo, 0);
 
 
+
+
+/// Event handler
+
+let currentAccount;
+
+btnLogin.addEventListener('click', function (e) {
+  e.preventDefault();
+
+  currentAccount = accounts.find(acc => acc.username === inputLoginUsername.value)
+  console.log(currentAccount)
+  if (currentAccount?.pin === Number(inputLoginPin.value)) {
+labelWelcome.textContent = `Welcome back, ${currentAccount.owner.split(' ')[0]}`
+containerApp.style.opacity = "100";
+
+//clear input data
+
+inputLoginPin.value = ""
+
+displayMovements(currentAccount.movements);
+calcPrintBalance(currentAccount.movements);
+calcDisplaySummary(currentAccount)
+
+
+  } else {
+
+    labelWelcome.textContent = `Wrong data`
+
+  }
+}) 
 
 
 
@@ -178,6 +206,8 @@ const currencies = new Map([
 //   console.log(`to jest arr ${arr}`)
 // }
 // })
+
+
 
 
 
