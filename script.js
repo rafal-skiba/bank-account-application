@@ -108,10 +108,13 @@ const deposits = movements.filter((depo) => depo > 0)
 const withdrawals = movements.filter((withdrawal) => withdrawal < 0)
 
 
-const calcPrintBalance = function (movements) {
-const balance = movements.reduce((acc, curr) => acc + curr, 0 )
+const calcPrintBalance = function (acc) {
+  acc.balance = acc.movements.reduce((acc, curr) => acc + curr, 0 );
 
-labelBalance.textContent = `${balance}€`;
+  console.log(acc.balance);
+ 
+
+labelBalance.textContent = `${acc.balance}€`;
 
 }
 
@@ -152,14 +155,20 @@ const totalDepo = movements.filter(depo => depo > 0).map(depo => depo * eurotoUs
 
 
 /// Event handler
-
 let currentAccount;
+
+const updateUI = (acc) => {
+  displayMovements(acc.movements);
+calcPrintBalance(acc);
+calcDisplaySummary(acc)
+}
+
+
 
 btnLogin.addEventListener('click', function (e) {
   e.preventDefault();
 
   currentAccount = accounts.find(acc => acc.username === inputLoginUsername.value)
-  console.log(currentAccount)
   if (currentAccount?.pin === Number(inputLoginPin.value)) {
 labelWelcome.textContent = `Welcome back, ${currentAccount.owner.split(' ')[0]}`
 containerApp.style.opacity = "100";
@@ -168,9 +177,8 @@ containerApp.style.opacity = "100";
 
 inputLoginPin.value = ""
 
-displayMovements(currentAccount.movements);
-calcPrintBalance(currentAccount.movements);
-calcDisplaySummary(currentAccount)
+updateUI(currentAccount)
+
 
 
   } else {
@@ -180,8 +188,30 @@ calcDisplaySummary(currentAccount)
   }
 }) 
 
+/// Event handler transfer money
 
 
+btnTransfer.addEventListener('click', (e) => {
+  e.preventDefault();
+
+  const amount = Number(inputTransferAmount.value);
+  const receiverAcc = accounts.find(acc => acc.username ===  inputTransferTo.value )
+inputTransferAmount.value = "";
+inputTransferTo.value = "";
+  if (amount > 0 
+    && receiverAcc
+    && currentAccount.balance >= amount 
+    && receiverAcc?.username !== currentAccount.username ) {
+
+/// transfer push method
+currentAccount.movements.push(-amount)
+receiverAcc.movements.push(amount)
+updateUI(currentAccount)  
+  }
+
+ 
+
+})
 
 
 /////////////////////////////////////////////////
