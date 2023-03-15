@@ -167,7 +167,6 @@ calcDisplaySummary(acc)
 
 btnLogin.addEventListener('click', function (e) {
   e.preventDefault();
-
   currentAccount = accounts.find(acc => acc.username === inputLoginUsername.value)
   if (currentAccount?.pin === Number(inputLoginPin.value)) {
 labelWelcome.textContent = `Welcome back, ${currentAccount.owner.split(' ')[0]}`
@@ -209,9 +208,32 @@ receiverAcc.movements.push(amount)
 updateUI(currentAccount)  
   }
 
- 
+})
+
+
+
+//Close account function
+
+btnClose.addEventListener('click', function (e) {
+e.preventDefault();
+
+
+
+  if (inputCloseUsername.value === currentAccount.username && Number(inputClosePin.value) === currentAccount.pin) {
+
+const index = accounts.findIndex(acc => acc.username === currentAccount.username );
+
+    accounts.splice(index, 1)
+
+    containerApp.style.opacity = 0;
+
+  }
+
+  inputCloseUsername.value = inputClosePin.value = "";
 
 })
+
+
 
 
 /////////////////////////////////////////////////
