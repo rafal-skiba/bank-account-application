@@ -6,14 +6,14 @@
 
 // Data
 const account1 = {
-  owner: 'Jonas Schmedtmann',
+  owner: 'Justyna Skiba',
   movements: [200, 450, -400, 3000, -650, -130, 70, 1300],
   interestRate: 1.2, // %
-  pin: 1111,
+  pin: 1234,
 };
 
 const account2 = {
-  owner: 'Jessica Davis',
+  owner: 'Rafał Skiba',
   movements: [5000, 3400, -150, -790, -3210, -1000, 8500, -30],
   interestRate: 1.5,
   pin: 2222,
@@ -212,6 +212,21 @@ updateUI(currentAccount)
 
 
 
+//Loan account function
+
+btnLoan.addEventListener('click', (e) => {
+e.preventDefault();
+
+const loan = Number(inputLoanAmount.value)
+
+if (loan && currentAccount.movements.some(mov => mov >= loan * 0.1)) {
+currentAccount.movements.push(loan);
+}
+
+updateUI(currentAccount);
+
+})
+
 //Close account function
 
 btnClose.addEventListener('click', function (e) {
@@ -258,7 +273,6 @@ const currencies = new Map([
 //   console.log(`to jest arr ${arr}`)
 // }
 // })
-
 
 
 
