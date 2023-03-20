@@ -67,11 +67,13 @@ const inputClosePin = document.querySelector('.form__input--pin');
 
 /// function forEach reading values from account1
 
-const displayMovements = function(movements) {
+const displayMovements = function(movements, sort = false) {
+
+const movs = sort ? movements.slice().sort((a,b) => a -b) : movements;
 
 containerMovements.innerHTML = '';
 
-movements.forEach(function(mov, i) {
+movs.forEach(function(mov, i) {
 const type = mov > 0 ? 'deposit': 'withdrawal';
 
 const html = `
@@ -248,31 +250,16 @@ const index = accounts.findIndex(acc => acc.username === currentAccount.username
 
 })
 
+let stateOfSorted = false;
+btnSort.addEventListener('click', (e) => {
+e.preventDefault();
 
+displayMovements(currentAccount.movements, !stateOfSorted);
 
+stateOfSorted = !stateOfSorted;
 
-/////////////////////////////////////////////////
-/////////////////////////////////////////////////
-// LECTURES
+})
 
-const currencies = new Map([
-  ['USD', 'United States dollar'],
-  ['EUR', 'Euro'],
-  ['GBP', 'Pound sterling'],
-]);
-
-
-
-/////////////////////////////////////////////////
-
-
-// movements.forEach((value, index, arr) => {
-// if (value > 0 ) {
-//   console.log(`number ${index} deposited ${value}`)
-// } else {
-//   console.log(`to jest arr ${arr}`)
-// }
-// })
 
 
 
