@@ -125,12 +125,22 @@ containerMovements.innerHTML = '';
 movs.forEach(function(mov, i) {
 const type = mov > 0 ? 'deposit': 'withdrawal';
 
+const date = new Date(acc.movementsDates[i]);
+
+const day =`${now.getDate()}`.padStart(2,0);
+const month =`${now.getMonth()+1}`.padStart(2,0);
+const year = now.getFullYear();
+
+const displayDate = `${day}/${month}/${year}`;
+
 const html = `
 <div class="movements__row">
           <div class="movements__type movements__type--${type}">${i+1} ${type}</div>
-          <div class="movements__value">${mov}</div>
+          <div class="movements__date">${displayDate}</div>
+          <div class="movements__value">${mov.toFixed(2)}</div>
 </div>
 `;
+
 
 
 containerMovements.insertAdjacentHTML('afterbegin', html);
@@ -138,21 +148,6 @@ containerMovements.insertAdjacentHTML('afterbegin', html);
 
 })
 }
-
-
-const createUsernames = function (accs) {
-accs.forEach(function (acc) {
-  acc.username= acc.owner 
-  .toLowerCase()
-  .split(' ')
-  .map((name) => name[0])
-  .join('');
-
- 
-})
-}
-
-createUsernames(accounts);
 
 
 const deposits = movements.filter((depo) => depo > 0)
@@ -197,16 +192,28 @@ labelSumInterest.textContent = interest + '€';
 
 
 
-
 const eurotoUsd = 1.1;
 
 const totalDepo = movements.filter(depo => depo > 0).map(depo => depo * eurotoUsd).reduce((acc, depo) => acc + depo, 0);
 
 
 
+const createUsernames = function (accs) {
+  accs.forEach(function (acc) {
+    acc.username= acc.owner 
+    .toLowerCase()
+    .split(' ')
+    .map((name) => name[0])
+    .join('');
+  
+   
+  })
+  }
+  
+  createUsernames(accounts);
+
 
 /// Event handler
-let currentAccount;
 
 const updateUI = (acc) => {
   displayMovements(acc);
@@ -214,7 +221,7 @@ const updateUI = (acc) => {
   calcDisplaySummary(acc)
 }
 
-
+let currentAccount;
 
 btnLogin.addEventListener('click', function (e) {
   e.preventDefault();
@@ -256,6 +263,12 @@ inputTransferTo.value = "";
 /// transfer push method
 currentAccount.movements.push(-amount)
 receiverAcc.movements.push(amount)
+
+//add transfer date
+
+currentAccount.movementsDates.push(new Date().toISOString());
+receiverAcc.movementsDates.push(new Date().toISOString());
+
 updateUI(currentAccount)  
   }
 
@@ -272,6 +285,13 @@ const loan = Number(inputLoanAmount.value)
 
 if (loan && currentAccount.movements.some(mov => mov >= loan * 0.1)) {
 currentAccount.movements.push(loan);
+
+
+//Add loan date 
+currentAccount.movementsDates.push(new Date().toISOString());
+console.log(currentAccount)
+
+
 }
 
 updateUI(currentAccount);
@@ -310,9 +330,8 @@ stateOfSorted = !stateOfSorted;
 })
 
 const now = new Date();
-
 const day =`${now.getDate()}`.padStart(2,0);
 const month =`${now.getMonth()+1}`.padStart(2,0);
+const year = now.getFullYear();
 
-
-labelDate.textContent = `${day}/${month}/${new Date().getFullYear()}`
+labelDate.textContent = `${day}/${month}/${year}`
