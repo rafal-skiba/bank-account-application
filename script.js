@@ -21,7 +21,7 @@ const account1 = {
     "2023-04-08T10:51:36.790Z",
   ],
   currency: "EUR",
-  locale: "pt-PT"
+  locale: "pl-PL"
 };
 
 const account2 = {
@@ -41,7 +41,7 @@ const account2 = {
     "2023-04-08T10:51:36.790Z",
   ],
   currency: "USD",
-  locale: "en-US",
+  locale: "pl-PL",
 };
 
 const account3 = {
@@ -79,7 +79,7 @@ const account4 = {
     "2023-04-08T10:51:36.790Z",
   ],
   currency: "USD",
-  locale: "en-US",
+  locale: "pt-PT",
 };
 
 const accounts = [account1, account2, account3, account4];
@@ -116,7 +116,7 @@ const inputClosePin = document.querySelector('.form__input--pin');
 
 /// function forEach reading values from account1
 
-const formatDaysInMovements = function(date) {
+const formatDaysInMovements = function(date, locale) {
   const calcDaysPassed = (date1, date2) => Math.round(Math.abs(date2-date1) /
   (1000*60*60*24));
 
@@ -126,13 +126,7 @@ const formatDaysInMovements = function(date) {
   if (daysPassed === 0 ) return "Today"
   if (daysPassed === 1 ) return "Yesterday"
   if (daysPassed <= 7 ) return `${daysPassed} days ago`;
-  else {
-    const day =`${date.getDate()}`.padStart(2,0);
-    const month =`${date.getMonth()+1}`.padStart(2,0);
-    const year = date.getFullYear();
-    return`${day}/${month}/${year}`;
-
-  }
+  return new Intl.DateTimeFormat(locale).format(date);
 
 }
 
@@ -148,7 +142,7 @@ movs.forEach(function(mov, i) {
 const type = mov > 0 ? 'deposit': 'withdrawal';
 
 const date = new Date(acc.movementsDates[i]);
-const displayDate = formatDaysInMovements(date);
+const displayDate = formatDaysInMovements(date, acc.locale);
 
 
 const html = `
@@ -227,6 +221,7 @@ const createUsernames = function (accs) {
 
 
 /// Event handler
+let currentAccount;
 
 const updateUI = (acc) => {
   displayMovements(acc);
@@ -234,7 +229,8 @@ const updateUI = (acc) => {
   calcDisplaySummary(acc)
 }
 
-let currentAccount;
+
+
 
 btnLogin.addEventListener('click', function (e) {
   e.preventDefault();
@@ -242,6 +238,24 @@ btnLogin.addEventListener('click', function (e) {
   if (currentAccount?.pin === Number(inputLoginPin.value)) {
 labelWelcome.textContent = `Welcome back, ${currentAccount.owner.split(' ')[0]}`
 containerApp.style.opacity = "100";
+
+//API DATE
+
+const now = new Date();
+
+const options = {
+  hour: "numeric",
+  minute: "numeric",
+  day: 'numeric',
+  month: 'long',
+  year: 'numeric',
+  weekday: 'long'
+}
+
+
+console.log(currentAccount.locale)
+
+labelDate.textContent = new Intl.DateTimeFormat(currentAccount.locale, options).format(now);
 
 //clear input data
 
@@ -342,9 +356,5 @@ stateOfSorted = !stateOfSorted;
 
 })
 
-const now = new Date();
-const day =`${now.getDate()}`.padStart(2,0);
-const month =`${now.getMonth()+1}`.padStart(2,0);
-const year = now.getFullYear();
 
-labelDate.textContent = `${day}/${month}/${year}`
+
