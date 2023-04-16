@@ -20,7 +20,7 @@ const account1 = {
     "2023-04-07T23:36:17.929Z",
     "2023-04-08T10:51:36.790Z",
   ],
-  currency: "EUR",
+  currency: "PLN",
   locale: "pl-PL"
 };
 
@@ -40,7 +40,7 @@ const account2 = {
     "2023-04-07T23:36:17.929Z",
     "2023-04-08T10:51:36.790Z",
   ],
-  currency: "USD",
+  currency: "PLN",
   locale: "pl-PL",
 };
 
@@ -130,6 +130,16 @@ const formatDaysInMovements = function(date, locale) {
 
 }
 
+const formatCurrency = function (val, locale, currency) {
+
+  return new Intl.NumberFormat(locale, {
+    style: 'currency',
+    currency: currency,
+  }).format(val);
+
+}
+
+
 
 
 const displayMovements = function(acc, sort = false) {
@@ -145,11 +155,14 @@ const date = new Date(acc.movementsDates[i]);
 const displayDate = formatDaysInMovements(date, acc.locale);
 
 
+const formattedMov = formatCurrency(mov, acc.locale, acc.currency)
+
+
 const html = `
 <div class="movements__row">
           <div class="movements__type movements__type--${type}">${i+1} ${type}</div>
           <div class="movements__date">${displayDate}</div>
-          <div class="movements__value">${mov.toFixed(2)}</div>
+          <div class="movements__value">${formattedMov}</div>
 </div>
 `;
 
@@ -164,10 +177,9 @@ const withdrawals = movements.filter((withdrawal) => withdrawal < 0)
 const calcPrintBalance = function (acc) {
   acc.balance = acc.movements.reduce((acc, curr) => acc + curr, 0 );
 
-  console.log(acc.balance);
- 
+const formattedBalance = formatCurrency(acc.balance, acc.locale, acc.currency)
 
-labelBalance.textContent = `${acc.balance}€`;
+labelBalance.textContent = `${formattedBalance}`;
 
 }
 
@@ -178,13 +190,19 @@ const calcDisplaySummary = function (acc) {
   .filter(depo => depo > 0)
   .reduce((acc, mov) => acc + mov, 0)
 
-  labelSumIn.textContent = incomes + '€';
+  const formattedIncomes = formatCurrency(incomes, acc.locale, acc.currency)
+
+
+  labelSumIn.textContent = formattedIncomes;
 
   const outcomes = acc.movements
   .filter(depo => depo < 0)
   .reduce((acc, mov) => acc + mov, 0)
 
- labelSumOut.textContent = Math.abs(outcomes) + '€';
+  const formattedOutcomes = formatCurrency(outcomes, acc.locale, acc.currency)
+
+
+ labelSumOut.textContent = formattedOutcomes;
 
 
 const interest = acc.movements
@@ -193,7 +211,9 @@ const interest = acc.movements
 .filter((int, i, arr) => int >= 1)
 .reduce((acc, int) => acc + int, 0)
 
-labelSumInterest.textContent = interest + '€';
+const formattedInterest = formatCurrency(interest, acc.locale, acc.currency)
+
+labelSumInterest.textContent = formattedInterest;
 
 }
 
@@ -253,7 +273,6 @@ const options = {
 }
 
 
-console.log(currentAccount.locale)
 
 labelDate.textContent = new Intl.DateTimeFormat(currentAccount.locale, options).format(now);
 
@@ -355,6 +374,4 @@ displayMovements(currentAccount.movements, !stateOfSorted);
 stateOfSorted = !stateOfSorted;
 
 })
-
-
 
