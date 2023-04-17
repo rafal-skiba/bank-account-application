@@ -249,6 +249,28 @@ const updateUI = (acc) => {
   calcDisplaySummary(acc)
 }
 
+//setIntervalTimer function in log in
+
+const startLogOutTimer = function () {
+//Set time to 5 minute activity in bank account
+let time = 50;
+
+const timerActivity = setInterval ( function () {
+
+const min = String(Math.trunc(time / 60)).padStart(2,0);
+const sec = String(time % 60).padStart(2,0); 
+
+labelTimer.textContent = `${min}:${sec}`;
+
+time--;
+
+if (time === 0) {
+  clearInterval(timerActivity)
+}
+
+}, 1000);
+};
+
 
 
 
@@ -279,6 +301,8 @@ labelDate.textContent = new Intl.DateTimeFormat(currentAccount.locale, options).
 //clear input data
 
 inputLoginPin.value = ""
+
+startLogOutTimer();
 
 updateUI(currentAccount)
 
@@ -329,20 +353,19 @@ e.preventDefault();
 
 const loan = Number(inputLoanAmount.value)
 
-if (loan && currentAccount.movements.some(mov => mov >= loan * 0.1)) {
+if (loan && currentAccount.movements.some(mov => mov >= loan * 0.1)) { 
+ setTimeout(() => {
 currentAccount.movements.push(loan);
-
-
 //Add loan date 
 currentAccount.movementsDates.push(new Date().toISOString());
-console.log(currentAccount)
 
 
-}
 
 updateUI(currentAccount);
+}, 3000) 
+}
 
-})
+});
 
 //Close account function
 
