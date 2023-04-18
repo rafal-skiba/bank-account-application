@@ -241,7 +241,7 @@ const createUsernames = function (accs) {
 
 
 /// Event handler
-let currentAccount;
+let currentAccount, timerActivity;
 
 const updateUI = (acc) => {
   displayMovements(acc);
@@ -252,23 +252,31 @@ const updateUI = (acc) => {
 //setIntervalTimer function in log in
 
 const startLogOutTimer = function () {
+
+  const tick = function() {
+
+    const min = String(Math.trunc(time / 60)).padStart(2,0);
+    const sec = String(time % 60).padStart(2,0); 
+    
+    labelTimer.textContent = `${min}:${sec}`;
+    
+    
+    
+    if (time === 0) {
+      clearInterval(timerActivity);
+      labelWelcome.textContent = `Log in to get started`
+    containerApp.style.opacity = 0;
+    }
+    time--;
+    };
+
 //Set time to 5 minute activity in bank account
-let time = 50;
+let time = 300;
+tick();
+const timerActivity = setInterval (tick  , 1000);
 
-const timerActivity = setInterval ( function () {
+return timerActivity;
 
-const min = String(Math.trunc(time / 60)).padStart(2,0);
-const sec = String(time % 60).padStart(2,0); 
-
-labelTimer.textContent = `${min}:${sec}`;
-
-time--;
-
-if (time === 0) {
-  clearInterval(timerActivity)
-}
-
-}, 1000);
 };
 
 
@@ -279,7 +287,7 @@ btnLogin.addEventListener('click', function (e) {
   currentAccount = accounts.find(acc => acc.username === inputLoginUsername.value)
   if (currentAccount?.pin === Number(inputLoginPin.value)) {
 labelWelcome.textContent = `Welcome back, ${currentAccount.owner.split(' ')[0]}`
-containerApp.style.opacity = "100";
+containerApp.style.opacity = 100;
 
 //API DATE
 
@@ -302,7 +310,11 @@ labelDate.textContent = new Intl.DateTimeFormat(currentAccount.locale, options).
 
 inputLoginPin.value = ""
 
-startLogOutTimer();
+//Timer activity
+
+if (timerActivity) clearInterval(timerActivity);
+
+ timerActivity = startLogOutTimer();
 
 updateUI(currentAccount)
 
