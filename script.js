@@ -352,7 +352,13 @@ currentAccount.movementsDates.push(new Date().toISOString());
 receiverAcc.movementsDates.push(new Date().toISOString());
 
 updateUI(currentAccount)  
-  }
+
+// Reset timer
+
+clearInterval(timerActivity);
+timerActivity = startLogOutTimer();
+
+ }
 
 })
 
@@ -374,6 +380,12 @@ currentAccount.movementsDates.push(new Date().toISOString());
 
 
 updateUI(currentAccount);
+
+// Reset timer
+
+clearInterval(timerActivity);
+timerActivity = startLogOutTimer();
+
 }, 3000) 
 }
 
